@@ -35,7 +35,7 @@ namespace ServiceReportAPI.Controllers
 
         // POST api/<StudentsController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Student student)
+        public async Task<IActionResult> Post(Student student)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace ServiceReportAPI.Controllers
 
         // PUT api/<StudentsController>/5
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody] Student student)
+        public async Task<IActionResult> Put(Student student)
         {
             try
             {

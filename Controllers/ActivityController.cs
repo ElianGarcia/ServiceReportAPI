@@ -8,22 +8,22 @@ namespace ServiceReportAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GoalsController : ControllerBase
+    public class ActivityController : ControllerBase
     {
-        private readonly IGoalsRepository _repository;
+        private readonly IActivityRepository _repository;
 
-        public GoalsController(IGoalsRepository repository)
+        public ActivityController(IActivityRepository repository)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        // GET: api/<GoalsController>
+        // GET api/<ActivityController>/5
         [HttpGet("{UserId}")]
         public async Task<IActionResult> Get(long UserId)
         {
             try
             {
-                var result = await _repository.GetGoal(UserId);
+                var result = await _repository.GetTodaysActivity(UserId);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -33,29 +33,13 @@ namespace ServiceReportAPI.Controllers
             }
         }
 
-        [Route("getProgress/{id}")]
-        [HttpGet]
-        public async Task<IActionResult> GetProgress(long id)
-        {
-            try
-            {
-                var result = await _repository.GetProgress(id);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                //log error
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        // POST api/<GoalsController>
+        // POST api/<ActivityController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Goal goal)
+        public async Task<IActionResult> Post(Activity activity)
         {
             try
             {
-                var result = await _repository.CreateGoal(goal);
+                var result = await _repository.CreateActivity(activity);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -65,13 +49,13 @@ namespace ServiceReportAPI.Controllers
             }
         }
 
-        // PUT api/<GoalsController>/5
+        // PUT api/<ActivityController>/5
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody] Goal goal)
+        public async Task<IActionResult> Put(Activity activity)
         {
             try
             {
-                var result = await _repository.UpdateGoal(goal);
+                var result = await _repository.UpdateActivity(activity);
                 return Ok(result);
             }
             catch (Exception ex)

@@ -14,6 +14,7 @@ namespace ServiceReportAPI.Models
         public string Observations { get; set; }
         public long UserId { get; set; }
         public long PlacementId { get; set; }
+        public string? PlacementName { get; set; }
 
         public Student()
         {

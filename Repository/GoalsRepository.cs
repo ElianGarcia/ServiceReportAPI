@@ -40,6 +40,29 @@ namespace ServiceReportAPI.Repository
             using (var connection = _context.CreateConnection())
             {
                 var goal = await connection.QueryFirstAsync<Goal>(query, parameters);
+                goal.Progress = this.GetProgress(UserId).Result.Last<Goal>();
+                return goal;
+            }
+        }
+        
+        public async Task<IEnumerable<Goal>> GetProgress(long UserId)
+        {
+            var query = @"SELECT TOP 12
+                SUM(ISNULL(Hours, 0)) AS Hours, 
+                SUM(ISNULL(Placements, 0)) AS Placements, 
+	            SUM(ISNULL(Videos, 0)) AS Videos,
+	            MONTH(Date) AS Month
+            FROM Activity 
+            WHERE UserId = @UserId
+	        GROUP BY MONTH(Date)
+            ORDER BY MONTH(Date)";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("UserId", UserId, DbType.Int64);
+
+            using (var connection = _context.CreateConnection())
+            {
+                var goal = await connection.QueryAsync<Goal>(query, parameters);
                 return goal;
             }
         }

@@ -53,7 +53,7 @@ namespace ServiceReportAPI.Repository
 
         public async Task<IEnumerable<Student>> GetStudents(long UserId)
         {
-            var query = "SELECT * FROM Students WHERE UserId = @UserId";
+            var query = "SELECT s.*, p.ShortName AS PlacementName FROM Students s INNER JOIN Placements p ON s.PlacementId = p.PlacementId WHERE UserId = @UserId";
             var parameters = new DynamicParameters();
             parameters.Add("UserId", UserId, DbType.Int64);
 

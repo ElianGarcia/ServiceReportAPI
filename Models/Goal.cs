@@ -11,6 +11,8 @@ namespace ServiceReportAPI.Models
         public int Placements { get; set; }
         public int Videos { get; set; }
         public Int64 UserID { get; set; }
+        public int? Month { get; set; }
+        public Goal? Progress { get; set; }
 
         public Goal()
         {

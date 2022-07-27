@@ -2,36 +2,32 @@
 
 namespace ServiceReportAPI.Models
 {
-    public class Report
+    public class Activity
     {
-        public Int64 ReportId { get; set; }
+        public Int64 ActivityId { get; set; }
         public decimal Hours { get; set; }
         public int Videos { get; set; }
         public int Placements { get; set; }
         public DateTime Date { get; set; }
-
-        [ForeignKey("UserId")]
         public Int64 UserId { get; set; }
-        public User? User { get; set; }
 
-        public Report()
+        public Activity()
         {
-            ReportId = 0;
+            ActivityId = 0;
             Hours = 0;
             Videos = 0;
             Placements = 0;
-            User = new User();
+            Date = DateTime.Now;
         }
 
-        public Report(int iD, decimal hours, int videos, int placements, DateTime date, long userId, User user)
+        public Activity(int iD, decimal hours, int videos, int placements, DateTime date, long userId)
         {
-            ReportId = iD;
+            ActivityId = iD;
             Hours = hours;
             Videos = videos;
             Placements = placements;
             Date = date;
             UserId = userId;
-            User = user ?? throw new ArgumentNullException(nameof(user));
         }
     }
 }
