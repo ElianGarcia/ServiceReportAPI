@@ -15,6 +15,7 @@ namespace ServiceReportAPI.Models
         public long UserId { get; set; }
         public long PlacementId { get; set; }
         public string? PlacementName { get; set; }
+        public IEnumerable<ReturnVisit>? ReturnVisits { get; set; }
 
         public Student()
         {

@@ -11,10 +11,12 @@ namespace ServiceReportAPI.Controllers
     public class StudentsController : ControllerBase
     {
         private readonly IStudentsRepository _repository;
+        private readonly IReturnVisitsRepository _visitsRepository;
 
-        public StudentsController(IStudentsRepository repository)
+        public StudentsController(IStudentsRepository repository, IReturnVisitsRepository visitsRepository)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _visitsRepository = visitsRepository ?? throw new ArgumentNullException(nameof(visitsRepository));
         }
 
         // GET: api/<StudentsController>/5
@@ -32,6 +34,22 @@ namespace ServiceReportAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        
+        [Route("GetStudent/{StudentId}")]
+        [HttpGet("GetStudent/{StudentId}")]
+        public async Task<IActionResult> GetStudent(long StudentId)
+        {
+            try
+            {
+                var result = await _repository.GetStudent(StudentId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return StatusCode(500, ex.Message);
+            }
+        }
 
         // POST api/<StudentsController>
         [HttpPost]
@@ -40,6 +58,22 @@ namespace ServiceReportAPI.Controllers
             try
             {
                 var result = await _repository.CreateStudent(student);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [Route("Visit")]
+        [HttpPost]
+        public async Task<IActionResult> Visit(ReturnVisit visit)
+        {
+            try
+            {
+                var result = await _visitsRepository.CreateReturnVisit(visit);
                 return Ok(result);
             }
             catch (Exception ex)

@@ -53,7 +53,7 @@ namespace ServiceReportAPI.Repository
 
         public async Task<IEnumerable<Student>> GetStudents(long UserId)
         {
-            var query = "SELECT s.*, p.ShortName AS PlacementName FROM Students s INNER JOIN Placements p ON s.PlacementId = p.PlacementId WHERE UserId = @UserId";
+            var query = "SELECT s.*, p.ShortName AS PlacementName FROM Students s INNER JOIN Placements p ON s.PlacementId = p.PlacementId WHERE UserId = @UserId AND Active = 1";
             var parameters = new DynamicParameters();
             parameters.Add("UserId", UserId, DbType.Int64);
 
@@ -63,15 +63,32 @@ namespace ServiceReportAPI.Repository
                 return result;
             }
         }
+        
+        public async Task<Student> GetStudent(long StudentId)
+        {
+            var query = "SELECT s.*, p.ShortName AS PlacementName FROM Students s INNER JOIN Placements p ON s.PlacementId = p.PlacementId WHERE StudentId = @StudentId AND Active = 1";
+            var queryVisits = "SELECT * FROM ReturnVisits WHERE StudentId = @StudentId AND Active = 1";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("StudentId", StudentId, DbType.Int64);
+
+            using (var connection = _context.CreateConnection())
+            {
+                var result = await connection.QueryFirstAsync<Student>(query, parameters);
+                var visits = await connection.QueryAsync<ReturnVisit>(queryVisits, parameters);
+                result.ReturnVisits = visits;
+                return result;
+            }
+        }
 
         public async Task<int> UpdateStudent(Student student)
         {
-            var query = @"UPDATE students SET Name = @Name
-                Address = @Address;
-                Phone = @Phone;
-                PlacementId = @PlacementId;
-                Active = true;
-                DayToVisit = @Day;
+            var query = @"UPDATE students SET Name = @Name,
+                Address = @Address,
+                Phone = @Phone,
+                PlacementId = @PlacementId,
+                Active = @Active,
+                DayToVisit = @DayToVisit,
                 Observations = @Observations
             WHERE StudentId = @Id";
 
@@ -81,7 +98,7 @@ namespace ServiceReportAPI.Repository
             parameters.Add("Address", student.Address, DbType.String);
             parameters.Add("Phone", student.Phone, DbType.String);
             parameters.Add("PlacementId", student.PlacementId, DbType.Int64);
-            parameters.Add("Active", true, DbType.Boolean);
+            parameters.Add("Active", student.Active ? 1 : 0, DbType.Int16);
             parameters.Add("DayToVisit", student.DayToVisit, DbType.Int16);
             parameters.Add("Observations", student.Observations, DbType.String);
             parameters.Add("UserId", student.UserId, DbType.Int64);

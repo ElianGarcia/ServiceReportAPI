@@ -10,6 +10,7 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddSingleton<DapperContext>();
 
 builder.Services.AddScoped<IActivityRepository, ActivityRepository>();
+builder.Services.AddScoped<IReturnVisitsRepository, ReturnVisitsRepository>();
 builder.Services.AddScoped<ICongregationsRepository, CongregationsRepository>();
 builder.Services.AddScoped<ICountriesRepository, CountriesRepository>();
 builder.Services.AddScoped<IGoalsRepository, GoalsRepository>();

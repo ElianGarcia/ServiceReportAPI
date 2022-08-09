@@ -22,7 +22,7 @@ namespace ServiceReportAPI.Repository
             parameters.Add("Hours", goal.Hours, DbType.Decimal);
             parameters.Add("Placements", goal.Placements, DbType.Int32);
             parameters.Add("Videos", goal.Videos, DbType.Int32);
-            parameters.Add("UserId", goal.UserID, DbType.Int64);
+            parameters.Add("UserId", goal.UserId, DbType.Int64);
 
             using (var connection = _context.CreateConnection())
             {
@@ -48,14 +48,16 @@ namespace ServiceReportAPI.Repository
         public async Task<IEnumerable<Goal>> GetProgress(long UserId)
         {
             var query = @"SELECT TOP 12
-                SUM(ISNULL(Hours, 0)) AS Hours, 
-                SUM(ISNULL(Placements, 0)) AS Placements, 
-	            SUM(ISNULL(Videos, 0)) AS Videos,
-	            MONTH(Date) AS Month
-            FROM Activity 
-            WHERE UserId = @UserId
-	        GROUP BY MONTH(Date)
-            ORDER BY MONTH(Date)";
+                SUM(ISNULL(a.Hours, 0)) AS Hours, 
+                SUM(ISNULL(a.Placements, 0)) AS Placements, 
+	            SUM(ISNULL(a.Videos, 0)) AS Videos,
+	            ISNULL((SELECT COUNT(VisitId) FROM ReturnVisits WHERE MONTH(Date) = MONTH(a.Date)), 0) AS ReturnVisits,
+	            MONTH(a.Date) AS Month
+            FROM Activity a
+            RIGHT JOIN ReturnVisits r ON r.UserId = a.UserId
+            WHERE a.UserId = @UserId
+            GROUP BY MONTH(a.Date)
+            ORDER BY MONTH(a.Date)";
 
             var parameters = new DynamicParameters();
             parameters.Add("UserId", UserId, DbType.Int64);
@@ -74,7 +76,7 @@ namespace ServiceReportAPI.Repository
             parameters.Add("Hours", goal.Hours, DbType.Decimal);
             parameters.Add("Placements", goal.Placements, DbType.Int32);
             parameters.Add("Videos", goal.Videos, DbType.Int32);
-            parameters.Add("UserId", goal.UserID, DbType.Int64);
+            parameters.Add("UserId", goal.UserId, DbType.Int64);
 
             using (var connection = _context.CreateConnection())
             {

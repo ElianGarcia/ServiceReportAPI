@@ -27,7 +27,8 @@ namespace ServiceReportAPI.Repository
             parameters.Add("Hours", Activity.Hours, DbType.Decimal);
             parameters.Add("Videos", Activity.Videos, DbType.Int32);
             parameters.Add("Placements", Activity.Placements, DbType.Int32);
-            parameters.Add("Date", Activity.Date, DbType.Int32);
+            parameters.Add("Date", Activity.Date, DbType.DateTime2);
+            parameters.Add("UserId", Activity.UserId, DbType.Int64);
 
             using (var connection = _context.CreateConnection())
             {
