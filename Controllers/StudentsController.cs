@@ -35,9 +35,8 @@ namespace ServiceReportAPI.Controllers
             }
         }
         
-        [Route("GetStudent/{StudentId}")]
-        [HttpGet("GetStudent/{StudentId}")]
-        public async Task<IActionResult> GetStudent(long StudentId)
+        [HttpGet("{StudentId}/{param}")]
+        public async Task<IActionResult> GetStudent(long StudentId, short param)
         {
             try
             {
@@ -47,7 +46,7 @@ namespace ServiceReportAPI.Controllers
             catch (Exception ex)
             {
                 //log error
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, ex.Message + param);
             }
         }
 

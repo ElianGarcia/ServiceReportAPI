@@ -10,7 +10,7 @@ namespace ServiceReportAPI.Models
         public int Hours { get; set; }
         public int Placements { get; set; }
         public int Videos { get; set; }
-        public Int64 UserId { get; set; }
+        public Int64? UserId { get; set; }
         public Int64? ReturnVisits { get; set; }
         public int? Month { get; set; }
         public Goal? Progress { get; set; }

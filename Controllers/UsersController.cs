@@ -11,10 +11,12 @@ namespace ServiceReportAPI.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUsersRepository _repository;
+        private readonly IGoalsRepository _goalsRepository;
 
-        public UsersController(IUsersRepository repository)
+        public UsersController(IUsersRepository repository, IGoalsRepository goalsRepository)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _goalsRepository = goalsRepository ?? throw new ArgumentNullException(nameof(goalsRepository));
         }
 
         // GET: api/<UsersController>
@@ -32,15 +34,39 @@ namespace ServiceReportAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        
+        [HttpGet]
+        [Route("Login")]
+        public async Task<IActionResult> Get(User user)
+        {
+            try
+            {
+                var result = await _repository.GetUser(user);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return StatusCode(500, ex.Message);
+            }
+        }
 
         // POST api/<UsersController>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] User user)
         {
+            var created = 0;
+
             try
             {
                 var result = await _repository.CreateUser(user);
-                return Ok(result);
+
+                if (result is not null)
+                {
+                    created = await _goalsRepository.CreateGoal(new Goal(0, 10, 10, 10, (long) result.UserId));
+                }
+
+                return Ok(created);
             }
             catch (Exception ex)
             {

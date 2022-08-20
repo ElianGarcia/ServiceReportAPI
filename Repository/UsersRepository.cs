@@ -15,23 +15,21 @@ namespace ServiceReportAPI.Repository
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<int> CreateUser(User user)
+        public async Task<User> CreateUser(User user)
         {
-            var query = @"INSERT INTO Users (Name, UserName, Password, 
-                IsAdmin, CongregationId, Active, LastLogin) VALUES 
-            (@Name, @UserName, @Password, @IsAdmin, @CongregationId, @Active, GETDATE())";
+            var query = @"INSERT INTO Users (Name, UserName, Password, CountryId,
+                IsAdmin, CongregationId, LastLogin, CreatedDate) VALUES 
+            (@Name, @UserName, @Password, 64, 0, @CongregationId, GETDATE(), GETDATE()); SELECT *, '' AS Password FROM Users WHERE Username = @Username;";
 
             var parameters = new DynamicParameters();
             parameters.Add("Name", user.Name, DbType.String);
             parameters.Add("UserName", user.UserName, DbType.String);
             parameters.Add("Password", user.Password, DbType.String);
-            parameters.Add("IsAdmin", user.IsAdmin, DbType.String);
             parameters.Add("CongregationId", user.CongregationId, DbType.Int64);
-            parameters.Add("Active", true, DbType.Boolean);
 
             using (var connection = _context.CreateConnection())
             {
-                var result = await connection.ExecuteAsync(query, parameters);
+                var result = await connection.QueryFirstOrDefaultAsync<User>(query, parameters);
                 return result;
             }
         }
@@ -58,6 +56,29 @@ namespace ServiceReportAPI.Repository
                 var result = await connection.QueryAsync<User>(query, null);
                 return result;
             }
+        }
+
+        public async Task<User> GetUser(User user)
+        {
+            var query = "SELECT *, '' as Password FROM users WHERE Username = @User AND Password = @Password";
+            var parameters = new DynamicParameters();
+            parameters.Add("User", user.UserName, DbType.String);
+            parameters.Add("Password", user.Password, DbType.String);
+
+            try
+            {
+                using (var connection = _context.CreateConnection())
+                {
+                    var result = await connection.QueryFirstAsync<User>(query, parameters);
+                    return result;
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+                throw;
+            }
+
         }
 
         public async Task<int> UpdateUser(User user)
