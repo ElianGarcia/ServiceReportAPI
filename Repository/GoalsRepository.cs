@@ -47,14 +47,13 @@ namespace ServiceReportAPI.Repository
         
         public async Task<IEnumerable<Goal>> GetProgress(long UserId)
         {
-            var query = @"SELECT TOP 12
+            var query = @"SELECT
                 SUM(ISNULL(a.Hours, 0)) AS Hours, 
                 SUM(ISNULL(a.Placements, 0)) AS Placements, 
 	            SUM(ISNULL(a.Videos, 0)) AS Videos,
-	            ISNULL((SELECT COUNT(VisitId) FROM ReturnVisits WHERE MONTH(Date) = MONTH(a.Date)), 0) AS ReturnVisits,
+	            ISNULL((SELECT COUNT(VisitId) FROM ReturnVisits WHERE MONTH(Date) = MONTH(a.Date) AND UserId = @UserId), 0) AS ReturnVisits, 
 	            MONTH(a.Date) AS Month
             FROM Activity a
-            RIGHT JOIN ReturnVisits r ON r.UserId = a.UserId
             WHERE a.UserId = @UserId
             GROUP BY MONTH(a.Date)
             ORDER BY MONTH(a.Date)";
