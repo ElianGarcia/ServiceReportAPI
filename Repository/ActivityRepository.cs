@@ -38,13 +38,48 @@ namespace ServiceReportAPI.Repository
                 VALUES 
                 (@Date, 0, @UserId);";
             }
-            
+
             using (var connection = _context.CreateConnection())
             {
                 var result = await connection.ExecuteAsync(query, parameters);
                 return result;
             }
-            
+
+        }
+
+        public async Task<Activity> GetActivityByDate(long UserId, DateTime Date)
+        {
+
+            var query = @"SELECT 
+                a.ActivityId,
+                ISNULL(a.Hours, 0) AS Hours, 
+                ISNULL(a.Placements, 0) AS Placements, 
+                ISNULL(a.Videos, 0) AS Videos, 
+                @DateReq AS Date,
+	            ISNULL((SELECT COUNT(VisitId) FROM ReturnVisits WHERE CONVERT(varchar, a.Date, 111) = @DateReq AND UserId = @UserId), 0) AS ReturnVisits,
+                a.UserId 
+            FROM Activity a
+            WHERE a.UserId = @UserId AND CONVERT(varchar, a.Date, 111) = @DateReq
+            GROUP BY a.ActivityId, a.Hours, a.Placements, a.Videos, a.Date, a.UserId";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("UserId", UserId, DbType.Int64);
+            parameters.Add("DateReq", Date.ToString("yyyy/MM/dd"), DbType.String);
+
+            using (var connection = _context.CreateConnection())
+            {
+                try
+                {
+                    var result = await connection.QueryFirstAsync<Activity>(query, parameters);
+                    return result;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+
+            }
         }
 
         public async Task<Activity> GetTodaysActivity(long UserId)
@@ -79,6 +114,8 @@ namespace ServiceReportAPI.Repository
             }
         }
 
+
+
         public async Task<int> UpdateActivity(Activity Activity)
         {
             var query = @"UPDATE Activity
@@ -93,6 +130,8 @@ namespace ServiceReportAPI.Repository
             parameters.Add("Videos", Activity.Videos, DbType.Int32);
             parameters.Add("Placements", Activity.Placements, DbType.Int32);
             parameters.Add("ReturnVisits", Activity.ReturnVisits, DbType.Int32);
+            parameters.Add("Date", Activity.Date, DbType.DateTime2);
+            parameters.Add("UserId", Activity.UserId, DbType.Int64);
 
             if (Activity.ReturnVisits > 0)
             {

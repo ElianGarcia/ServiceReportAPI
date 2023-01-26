@@ -17,11 +17,12 @@ namespace ServiceReportAPI.Repository
 
         public async Task<int> CreateGoal(Goal goal)
         {
-            var query = "INSERT INTO Goals (Hours, Placements, Videos, UserId) VALUES (@Hours, @Placements, @Videos, @UserId)";
+            var query = "INSERT INTO Goals (Hours, Placements, Videos, ReturnVisits, UserId) VALUES (@Hours, @Placements, @Videos, @ReturnVisits, @UserId)";
             var parameters = new DynamicParameters();
             parameters.Add("Hours", goal.Hours, DbType.Decimal);
             parameters.Add("Placements", goal.Placements, DbType.Int32);
             parameters.Add("Videos", goal.Videos, DbType.Int32);
+            parameters.Add("ReturnVisits", goal.ReturnVisits, DbType.Int32);
             parameters.Add("UserId", goal.UserId, DbType.Int64);
 
             using (var connection = _context.CreateConnection())
@@ -76,11 +77,12 @@ namespace ServiceReportAPI.Repository
 
         public async Task<int> UpdateGoal(Goal goal)
         {
-            var query = "UPDATE Goals SET Hours = @Hours, Placements = @Placements, Videos = @Videos WHERE UserId = @UserId";
+            var query = "UPDATE Goals SET Hours = @Hours, Placements = @Placements, Videos = @Videos, ReturnVisits = @ReturnVisits WHERE UserId = @UserId";
             var parameters = new DynamicParameters();
             parameters.Add("Hours", goal.Hours, DbType.Decimal);
             parameters.Add("Placements", goal.Placements, DbType.Int32);
             parameters.Add("Videos", goal.Videos, DbType.Int32);
+            parameters.Add("ReturnVisits", goal.ReturnVisits, DbType.Int32);
             parameters.Add("UserId", goal.UserId, DbType.Int64);
 
             using (var connection = _context.CreateConnection())

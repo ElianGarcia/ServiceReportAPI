@@ -33,6 +33,21 @@ namespace ServiceReportAPI.Controllers
             }
         }
 
+        [HttpGet("{UserId}/{Date}")]
+        public async Task<IActionResult> Get(long UserId, DateTime Date)
+        {
+            try
+            {
+                var result = await _repository.GetActivityByDate(UserId, Date);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         // POST api/<ActivityController>
         [HttpPost]
         public async Task<IActionResult> Post(Activity activity)
