@@ -1,4 +1,7 @@
-﻿namespace ServiceReportAPI.Utils
+﻿using System.Net;
+using System.Net.Mail;
+
+namespace ServiceReportAPI.Utils
 {
     static class ConfigurationManager
     {

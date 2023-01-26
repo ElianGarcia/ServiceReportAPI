@@ -40,7 +40,13 @@ namespace ServiceReportAPI.Repository
             using (var connection = _context.CreateConnection())
             {
                 var goal = await connection.QueryFirstAsync<Goal>(query, parameters);
-                goal.Progress = this.GetProgress(UserId).Result.Last<Goal>();
+                var progress = this.GetProgress(UserId).Result;
+
+                if (progress.Count() > 0)
+                    goal.Progress = progress.FirstOrDefault();
+                else 
+                    goal.Progress = new Goal(0, 0, 0, 0, UserId);
+
                 return goal;
             }
         }

@@ -8,6 +8,7 @@ namespace ServiceReportAPI.Models
         public decimal Hours { get; set; }
         public int Videos { get; set; }
         public int Placements { get; set; }
+        public int ReturnVisits { get; set; }
         public DateTime Date { get; set; }
         public Int64 UserId { get; set; }
 
@@ -18,16 +19,6 @@ namespace ServiceReportAPI.Models
             Videos = 0;
             Placements = 0;
             Date = DateTime.Now;
-        }
-
-        public Activity(int iD, decimal hours, int videos, int placements, DateTime date, long userId)
-        {
-            ActivityId = iD;
-            Hours = hours;
-            Videos = videos;
-            Placements = placements;
-            Date = date;
-            UserId = userId;
         }
     }
 }

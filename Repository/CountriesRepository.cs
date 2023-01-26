@@ -16,7 +16,7 @@ namespace ServiceReportAPI.Repository
 
         public async Task<IEnumerable<Country>> GetCountries()
         {
-            var query = "SELECT * FROM Countries";
+            var query = "SELECT CountryId, Name FROM Countries";
 
             using (var connection = _context.CreateConnection())
             {

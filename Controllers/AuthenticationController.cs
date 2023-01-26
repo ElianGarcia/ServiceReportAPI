@@ -6,6 +6,9 @@ using System.Text;
 using System.Configuration;
 using System.Security.Claims;
 using ServiceReportAPI.Contracts;
+using System.Net.Mail;
+using System.Net;
+using ServiceReportAPI.Utils;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -33,7 +36,7 @@ namespace ServiceReportAPI.Controllers
 
             var result = _repository.GetUser(user).Result;
 
-            if(result == null)
+            if (result == null)
                 return Unauthorized();
 
             if (result is User)
@@ -48,6 +51,41 @@ namespace ServiceReportAPI.Controllers
                     User = result
                 });
             }
+            return Unauthorized();
+        }
+
+        [HttpGet("recoveryPassword")]
+        public async Task<IActionResult> SendRecoveryMail(string mail)
+        {
+            if (mail is null)
+            {
+                return BadRequest("Invalid user request!!!");
+            }
+
+            var result = _repository.GetUsers().Result.ToList().Where(x => x.Email == mail).First();
+
+            #region Leer archivo HTML con el formato del correo
+            string body = "";
+            string[] lines = Mails.GetHTMLContent("Utils/reset-password.html");
+            
+            Random random = new Random();
+            string codigo = $"{random.Next(101, 999)}{random.Next(101, 999)}";
+
+            foreach (var item in lines)
+            {
+                if (item.Contains("######"))
+                {
+                    body += item.Replace("######", codigo);
+                }
+                else { 
+                    body += item + " ";
+                }
+            }
+            #endregion
+            
+            //send mail
+            await Mails.SendMail(mail, "Recuperación de contraseña", body);
+            
             return Unauthorized();
         }
     }

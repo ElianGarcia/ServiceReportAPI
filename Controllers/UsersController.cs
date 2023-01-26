@@ -62,9 +62,7 @@ namespace ServiceReportAPI.Controllers
                 var result = await _repository.CreateUser(user);
 
                 if (result is not null)
-                {
-                    created = await _goalsRepository.CreateGoal(new Goal(0, 10, 10, 10, (long) result.UserId));
-                }
+                    created = await _goalsRepository.CreateGoal(new Goal(0, 10, 10, 10, (long)result.UserId));
 
                 return Ok(created);
             }

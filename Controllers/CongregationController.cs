@@ -18,7 +18,7 @@ namespace ServiceReportAPI.Controllers
 
         // GET: api/<CongregationController>
         [HttpGet]
-        public async Task<IActionResult> GetCongregations()
+        public async Task<IActionResult> Get()
         {
             try
             {

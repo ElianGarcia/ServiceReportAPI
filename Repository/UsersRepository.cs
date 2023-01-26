@@ -18,14 +18,15 @@ namespace ServiceReportAPI.Repository
         public async Task<User> CreateUser(User user)
         {
             var query = @"INSERT INTO Users (Name, UserName, Password, CountryId,
-                IsAdmin, CongregationId, LastLogin, CreatedDate) VALUES 
-            (@Name, @UserName, @Password, 64, 0, @CongregationId, GETDATE(), GETDATE()); SELECT *, '' AS Password FROM Users WHERE Username = @Username;";
+                IsAdmin, CongregationId, LastLogin, CreatedDate, Email) VALUES 
+            (@Name, @UserName, @Password, 64, 0, @CongregationId, GETDATE(), GETDATE(), @Email); SELECT *, '' AS Password FROM Users WHERE Username = @Username;";
 
             var parameters = new DynamicParameters();
             parameters.Add("Name", user.Name, DbType.String);
             parameters.Add("UserName", user.UserName, DbType.String);
             parameters.Add("Password", user.Password, DbType.String);
             parameters.Add("CongregationId", user.CongregationId, DbType.Int64);
+            parameters.Add("CountryId", user.CountryId, DbType.Int64);
 
             using (var connection = _context.CreateConnection())
             {
@@ -78,7 +79,6 @@ namespace ServiceReportAPI.Repository
                 return null;
                 throw;
             }
-
         }
 
         public async Task<int> UpdateUser(User user)
@@ -86,6 +86,7 @@ namespace ServiceReportAPI.Repository
             var query = @"UPDATE users SET Name = @Name
                 UserName = @UserName, 
                 Password = @Password, 
+                Email = @Email, 
                 IsAdmin = @IsAdmin, 
                 Congregation = @CongregationId, 
                 Active = @Active
@@ -94,6 +95,7 @@ namespace ServiceReportAPI.Repository
             var parameters = new DynamicParameters();
             parameters.Add("Id", user.UserId, DbType.String);
             parameters.Add("Name", user.Name, DbType.String);
+            parameters.Add("Email", user.UserName, DbType.String);
             parameters.Add("UserName", user.UserName, DbType.String);
             parameters.Add("Password", user.Password, DbType.String);
             parameters.Add("IsAdmin", user.IsAdmin, DbType.String);
