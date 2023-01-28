@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ServiceReportAPI.Contracts;
 using ServiceReportAPI.Models;
+using ServiceReportAPI.Utils;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -62,7 +63,31 @@ namespace ServiceReportAPI.Controllers
                 var result = await _repository.CreateUser(user);
 
                 if (result is not null)
-                    created = await _goalsRepository.CreateGoal(new Goal(0, 10, 10, 10, (long)result.UserId));
+                    created = await _goalsRepository.CreateGoal(new Goal(0, 10, 10, 10, 5, (long)result.UserId));
+
+                if (created > 0)
+                {
+
+                    #region Leer archivo HTML con el formato del correo
+                    string body = "";
+                    string[] lines = Mails.GetHTMLContent("Utils/welcome.html");
+                    
+                    foreach (var item in lines)
+                    {
+                        if (item.Contains("####"))
+                        {
+                            body += item.Replace("####", user.Name);
+                        }
+                        else
+                        {
+                            body += item + " ";
+                        }
+                    }
+                    #endregion
+
+                    //send mail
+                    await Mails.SendMail(user.Email, "Service Report App", body);
+                }
 
                 return Ok(created);
             }

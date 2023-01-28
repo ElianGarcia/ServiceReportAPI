@@ -23,12 +23,13 @@ namespace ServiceReportAPI.Models
             UserId = 0;
         }
 
-        public Goal(int id, int hours, int placements, int videos, long userId)
+        public Goal(int id, int hours, int placements, int videos, Int64 returnVisits, long userId)
         {
             GoalId = id;
             Hours = hours;
             Placements = placements;
             Videos = videos;
+            ReturnVisits = returnVisits;
             UserId = userId;
         }
     }

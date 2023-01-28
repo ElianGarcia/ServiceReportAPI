@@ -46,7 +46,7 @@ namespace ServiceReportAPI.Repository
                 if (progress.Count() > 0)
                     goal.Progress = progress.FirstOrDefault();
                 else 
-                    goal.Progress = new Goal(0, 0, 0, 0, UserId);
+                    goal.Progress = new Goal(0, 0, 0, 0, 0, UserId);
 
                 return goal;
             }

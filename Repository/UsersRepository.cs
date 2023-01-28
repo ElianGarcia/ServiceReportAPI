@@ -25,6 +25,7 @@ namespace ServiceReportAPI.Repository
             parameters.Add("Name", user.Name, DbType.String);
             parameters.Add("UserName", user.UserName, DbType.String);
             parameters.Add("Password", user.Password, DbType.String);
+            parameters.Add("Email", user.Email, DbType.String);
             parameters.Add("CongregationId", user.CongregationId, DbType.Int64);
             parameters.Add("CountryId", user.CountryId, DbType.Int64);
 
@@ -95,7 +96,7 @@ namespace ServiceReportAPI.Repository
             var parameters = new DynamicParameters();
             parameters.Add("Id", user.UserId, DbType.String);
             parameters.Add("Name", user.Name, DbType.String);
-            parameters.Add("Email", user.UserName, DbType.String);
+            parameters.Add("Email", user.Email, DbType.String);
             parameters.Add("UserName", user.UserName, DbType.String);
             parameters.Add("Password", user.Password, DbType.String);
             parameters.Add("IsAdmin", user.IsAdmin, DbType.String);

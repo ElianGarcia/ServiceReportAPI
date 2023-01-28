@@ -54,7 +54,7 @@ namespace ServiceReportAPI.Controllers
             return Unauthorized();
         }
 
-        [HttpGet("recoveryPassword")]
+        [HttpGet("recoveryPassword/{mail}")]
         public async Task<IActionResult> SendRecoveryMail(string mail)
         {
             if (mail is null)
@@ -67,7 +67,7 @@ namespace ServiceReportAPI.Controllers
             #region Leer archivo HTML con el formato del correo
             string body = "";
             string[] lines = Mails.GetHTMLContent("Utils/reset-password.html");
-            
+
             Random random = new Random();
             string codigo = $"{random.Next(101, 999)}{random.Next(101, 999)}";
 
@@ -77,16 +77,24 @@ namespace ServiceReportAPI.Controllers
                 {
                     body += item.Replace("######", codigo);
                 }
-                else { 
+                else
+                {
                     body += item + " ";
                 }
             }
             #endregion
-            
-            //send mail
-            await Mails.SendMail(mail, "Recuperación de contraseña", body);
-            
-            return Unauthorized();
+
+            try
+            {
+                //send mail
+                var res = await Mails.SendMail(mail, "Recuperación de contraseña", body);
+
+                return Ok(res);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
     }
 
