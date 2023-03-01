@@ -67,26 +67,25 @@ namespace ServiceReportAPI.Controllers
 
                 if (created > 0)
                 {
-
                     #region Leer archivo HTML con el formato del correo
-                    string body = "";
-                    string[] lines = Mails.GetHTMLContent("Utils/welcome.html");
+                    //string body = "";
+                    //string[] lines = Mails.GetHTMLContent("Utils/welcome.html");
                     
-                    foreach (var item in lines)
-                    {
-                        if (item.Contains("####"))
-                        {
-                            body += item.Replace("####", user.Name);
-                        }
-                        else
-                        {
-                            body += item + " ";
-                        }
-                    }
+                    //foreach (var item in lines)
+                    //{
+                    //    if (item.Contains("####"))
+                    //    {
+                    //        body += item.Replace("####", user.Name);
+                    //    }
+                    //    else
+                    //    {
+                    //        body += item + " ";
+                    //    }
+                    //}
                     #endregion
 
                     //send mail
-                    await Mails.SendMail(user.Email, "Service Report App", body);
+                    //await Mails.SendMail(user.Email, "Service Report App", body);
                 }
 
                 return Ok(created);
