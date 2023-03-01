@@ -75,7 +75,7 @@ namespace ServiceReportAPI.Repository
                     return result;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return null;
                 throw;
