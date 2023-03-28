@@ -7,7 +7,7 @@ namespace ServiceReportAPI.Models
     {
         [Key]
         public Int64 GoalId { get; set; }
-        public int Hours { get; set; }
+        public decimal Hours { get; set; }
         public int Placements { get; set; }
         public int Videos { get; set; }
         public Int64? UserId { get; set; }
@@ -23,7 +23,7 @@ namespace ServiceReportAPI.Models
             UserId = 0;
         }
 
-        public Goal(int id, int hours, int placements, int videos, Int64 returnVisits, long userId)
+        public Goal(int id, decimal hours, int placements, int videos, Int64 returnVisits, long userId)
         {
             GoalId = id;
             Hours = hours;

@@ -6,6 +6,7 @@ namespace ServiceReportAPI.Contracts
     {
         public Task<Activity> GetTodaysActivity(long UserId);
         public Task<Activity> GetActivityByDate(long UserId, DateTime Date);
+        public Task<IEnumerable<Activity>> GetActualMonthActivity(long UserId);
         public Task<int> CreateActivity(Activity activity);
         public Task<int> UpdateActivity(Activity activity);
     }

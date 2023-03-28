@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using ServiceReportAPI.Contracts;
 using ServiceReportAPI.Models;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
-namespace ServiceReportAPI.Controllers
+namespace ServiceReportAPI.Controllers.v2
 {
-    [Route("api/v2/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ActivityController : ControllerBase
     {
@@ -39,21 +38,6 @@ namespace ServiceReportAPI.Controllers
             try
             {
                 var result = await _repository.GetActivityByDate(UserId, Date);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                //log error
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        [HttpGet("/api/Activity/actualMonth/{UserId}")]
-        public async Task<IActionResult> GetActualMonthActivity(long UserId)
-        {
-            try
-            {
-                var result = await _repository.GetActualMonthActivity(UserId);
                 return Ok(result);
             }
             catch (Exception ex)

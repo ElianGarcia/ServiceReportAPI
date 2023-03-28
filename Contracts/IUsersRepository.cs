@@ -6,6 +6,7 @@ namespace ServiceReportAPI.Contracts
     {
         public Task<IEnumerable<User>> GetUsers();
         public Task<User> GetUser(User user);
+        public Task<User> GetUser(string user);
         public Task<User> CreateUser(User User);
         public Task<int> UpdateUser(User User);
         public Task<int> DeleteUser(long UserId);

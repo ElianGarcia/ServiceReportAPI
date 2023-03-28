@@ -13,6 +13,8 @@ namespace ServiceReportAPI.Models
         public Int64? CongregationId { get; set; }
         public Int64? CountryId { get; set; }
         public bool? Active { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
 
         public User()
         {

@@ -4,7 +4,6 @@ using Microsoft.OpenApi.Models;
 using ServiceReportAPI.Context;
 using ServiceReportAPI.Contracts;
 using ServiceReportAPI.Repository;
-using System.Configuration;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -82,32 +82,66 @@ namespace ServiceReportAPI.Repository
             }
         }
 
+        public async Task<User> GetUser(string user)
+        {
+            var query = "SELECT * FROM users WHERE Username = @User";
+            var parameters = new DynamicParameters();
+            parameters.Add("User", user, DbType.String);
+
+            try
+            {
+                using (var connection = _context.CreateConnection())
+                {
+                    var result = await connection.QueryFirstAsync<User>(query, parameters);
+                    return result;
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+                throw;
+            }
+        }
+
         public async Task<int> UpdateUser(User user)
         {
-            var query = @"UPDATE users SET Name = @Name
-                UserName = @UserName, 
-                Password = @Password, 
+            var query = @"UPDATE users SET Name = @Name,
+                UserName = @UserName,  
                 Email = @Email, 
                 IsAdmin = @IsAdmin, 
-                Congregation = @CongregationId, 
-                Active = @Active
+                CongregationId = @CongregationId, 
+                Active = @Active,
+                RefreshToken = @RefreshToken,
+                RefreshTokenExpiryTime = @RefreshTokenExpiryTime
             WHERE UserId = @Id";
 
-            var parameters = new DynamicParameters();
-            parameters.Add("Id", user.UserId, DbType.String);
-            parameters.Add("Name", user.Name, DbType.String);
-            parameters.Add("Email", user.Email, DbType.String);
-            parameters.Add("UserName", user.UserName, DbType.String);
-            parameters.Add("Password", user.Password, DbType.String);
-            parameters.Add("IsAdmin", user.IsAdmin, DbType.String);
-            parameters.Add("CongregacionId", user.CongregationId, DbType.Int64);
-            parameters.Add("Active", true, DbType.Boolean);
-
-            using (var connection = _context.CreateConnection())
+            try
             {
-                var result = await connection.ExecuteAsync(query, parameters);
-                return result;
+                var parameters = new DynamicParameters();
+                parameters.Add("Id", user.UserId, DbType.String);
+                parameters.Add("Name", user.Name, DbType.String);
+                parameters.Add("Email", user.Email, DbType.String);
+                parameters.Add("UserName", user.UserName, DbType.String);
+                //parameters.Add("Password", user.Password, DbType.String);
+                parameters.Add("IsAdmin", user.IsAdmin, DbType.String);
+                parameters.Add("CongregationId", user.CongregationId, DbType.Int64);
+                parameters.Add("Active", true, DbType.Boolean);
+                parameters.Add("RefreshToken", user.RefreshToken, DbType.String);
+                parameters.Add("RefreshTokenExpiryTime", user.RefreshTokenExpiryTime, DbType.DateTime);
+
+                using (var connection = _context.CreateConnection())
+                {
+                    var result = await connection.ExecuteAsync(query, parameters);
+                    return result;
+                }
+
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return 0;
+            }
+
         }
     }
 }

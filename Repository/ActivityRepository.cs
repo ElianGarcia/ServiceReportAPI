@@ -114,6 +114,39 @@ namespace ServiceReportAPI.Repository
             }
         }
 
+        public async Task<IEnumerable<Activity>> GetActualMonthActivity(long UserId)
+        {
+            var query = @"SELECT DISTINCT
+                a.ActivityId,
+                ISNULL(a.Hours, 0) AS Hours, 
+                ISNULL(a.Placements, 0) AS Placements, 
+                ISNULL(a.Videos, 0) AS Videos, 
+                ISNULL(a.Date, GETDATE()) AS Date,
+	            ISNULL((
+		            SELECT COUNT(VisitId) FROM ReturnVisits WHERE FORMAT(a.Date,'dd/MM/yyyy') = FORMAT(Date, 'dd/MM/yyyy')), 0) AS ReturnVisits,
+                a.UserId 
+            FROM Activity a LEFT JOIN ReturnVisits r ON a.UserId = r.UserId
+            WHERE a.UserId = @UserId AND MONTH(a.Date) = MONTH(GETDATE())
+            GROUP BY a.ActivityId, a.Hours, a.Placements, a.Videos, a.Date, a.UserId, r.VisitId";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("UserId", UserId, DbType.Int64);
+
+            using (var connection = _context.CreateConnection())
+            {
+                try
+                {
+                    var result = await connection.QueryAsync<Activity>(query, parameters);
+                    return result;
+                }
+                catch (Exception e)
+                {
+                    return null;
+                }
+
+            }
+        }
+
         public async Task<int> UpdateActivity(Activity Activity)
         {
             var query = @"UPDATE Activity
