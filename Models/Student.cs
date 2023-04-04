@@ -15,6 +15,7 @@ namespace ServiceReportAPI.Models
         public long UserId { get; set; }
         public long PlacementId { get; set; }
         public string? PlacementName { get; set; }
+        public bool IsStudent { get; set; }
         public IEnumerable<ReturnVisit>? ReturnVisits { get; set; }
 
         public Student()
@@ -27,6 +28,7 @@ namespace ServiceReportAPI.Models
             DayToVisit = 0;
             Observations = String.Empty;
             UserId = 0;
+            IsStudent = false;
         }
 
         public Student(long iD, string name, string address, string phone, int placementId, bool active, int dayToVisit, string observations, long userId)

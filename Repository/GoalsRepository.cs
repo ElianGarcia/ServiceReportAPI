@@ -2,6 +2,7 @@
 using ServiceReportAPI.Context;
 using ServiceReportAPI.Contracts;
 using ServiceReportAPI.Models;
+using System;
 using System.Data;
 
 namespace ServiceReportAPI.Repository
@@ -45,13 +46,13 @@ namespace ServiceReportAPI.Repository
 
                 if (progress.Count() > 0)
                     goal.Progress = progress.LastOrDefault();
-                else 
+                else
                     goal.Progress = new Goal(0, 0, 0, 0, 0, UserId);
 
                 return goal;
             }
         }
-        
+
         public async Task<IEnumerable<Goal>> GetProgress(long UserId)
         {
             var query = @"SELECT
@@ -59,6 +60,10 @@ namespace ServiceReportAPI.Repository
                 SUM(ISNULL(a.Placements, 0)) AS Placements, 
 	            SUM(ISNULL(a.Videos, 0)) AS Videos,
 	            ISNULL((SELECT COUNT(VisitId) FROM ReturnVisits WHERE MONTH(Date) = MONTH(a.Date) AND UserId = @UserId), 0) AS ReturnVisits, 
+                (SELECT ISNULL(COUNT(*), 0) FROM STUDENTS 
+	                WHERE StudentId		
+		                IN (SELECT StudentId FROM ReturnVisits WHERE UserId = @UserId AND MONTH(Date) = MONTH(a.Date))
+		                AND IsStudent = 1)  AS Students,
 	            MONTH(a.Date) AS Month
             FROM Activity a
             WHERE a.UserId = @UserId
@@ -71,6 +76,21 @@ namespace ServiceReportAPI.Repository
             using (var connection = _context.CreateConnection())
             {
                 var goal = await connection.QueryAsync<Goal>(query, parameters);
+
+                foreach (Goal goal1 in goal)
+                {
+                    var hour = Math.Floor(goal1.Hours);
+                    var minute = Math.Round((goal1.Hours - hour) * 100);
+
+                    while (minute > 60)
+                    {
+                        minute -= 60;
+                        hour += 1;
+
+                        goal1.Hours = Convert.ToDecimal(hour + "." + minute);
+                    }
+                }
+
                 return goal;
             }
         }

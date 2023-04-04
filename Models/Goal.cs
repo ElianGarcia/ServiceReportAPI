@@ -10,6 +10,7 @@ namespace ServiceReportAPI.Models
         public decimal Hours { get; set; }
         public int Placements { get; set; }
         public int Videos { get; set; }
+        public int Students { get; set; }
         public Int64? UserId { get; set; }
         public Int64? ReturnVisits { get; set; }
         public int? Month { get; set; }
@@ -20,6 +21,7 @@ namespace ServiceReportAPI.Models
             Hours = 0;
             Placements = 0;
             Videos = 0;
+            Students = 0;
             UserId = 0;
         }
 

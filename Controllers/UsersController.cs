@@ -62,9 +62,6 @@ namespace ServiceReportAPI.Controllers
             {
                 var result = await _repository.CreateUser(user);
 
-                if (result is not null)
-                    created = await _goalsRepository.CreateGoal(new Goal(0, 10, 10, 10, 5, (long)result.UserId));
-
                 if (created > 0)
                 {
                     #region Leer archivo HTML con el formato del correo

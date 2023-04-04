@@ -18,8 +18,8 @@ namespace ServiceReportAPI.Repository
         public async Task<int> CreateStudent(Student student)
         {
             var query = @"INSERT INTO Students (Name, Address, Phone, 
-                PlacementId, Active, DayToVisit, Observations, UserId) VALUES 
-            (@Name, @Address, @Phone, @PlacementId, @Active, @DayToVisit, @Observations, @UserId)";
+                PlacementId, Active, DayToVisit, Observations, UserId, IsStudent) VALUES 
+            (@Name, @Address, @Phone, @PlacementId, @Active, @DayToVisit, @Observations, @UserId, @IsStudent)";
 
             var parameters = new DynamicParameters();
             parameters.Add("Name", student.Name, DbType.String);
@@ -30,6 +30,7 @@ namespace ServiceReportAPI.Repository
             parameters.Add("DayToVisit", student.DayToVisit, DbType.Int16);
             parameters.Add("Observations", student.Observations, DbType.String);
             parameters.Add("UserId", student.UserId, DbType.Int64);
+            parameters.Add("IsSudent", student.IsStudent, DbType.Boolean);
 
             using (var connection = _context.CreateConnection())
             {
@@ -89,7 +90,8 @@ namespace ServiceReportAPI.Repository
                 PlacementId = @PlacementId,
                 Active = @Active,
                 DayToVisit = @DayToVisit,
-                Observations = @Observations
+                Observations = @Observations,
+                IsStudent = @IsStudent
             WHERE StudentId = @Id";
 
             var parameters = new DynamicParameters();
@@ -102,6 +104,7 @@ namespace ServiceReportAPI.Repository
             parameters.Add("DayToVisit", student.DayToVisit, DbType.Int16);
             parameters.Add("Observations", student.Observations, DbType.String);
             parameters.Add("UserId", student.UserId, DbType.Int64);
+            parameters.Add("IsStudent", student.IsStudent, DbType.Boolean);
 
             using (var connection = _context.CreateConnection())
             {
