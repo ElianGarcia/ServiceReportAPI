@@ -11,7 +11,9 @@ namespace ServiceReportAPI.Models
         public DateTime? LastLogin { get; set; }
         public bool? IsAdmin { get; set; }
         public Int64? CongregationId { get; set; }
+        public string? CongregationName { get; set; }
         public Int64? CountryId { get; set; }
+        public string? CountryName { get; set; }
         public bool? Active { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }

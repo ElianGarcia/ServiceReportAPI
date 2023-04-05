@@ -20,6 +20,7 @@ builder.Services.AddScoped<IGoalsRepository, GoalsRepository>();
 builder.Services.AddScoped<IPlacementsRepository, PlacementsRepository>();
 builder.Services.AddScoped<IStudentsRepository, StudentsRepository>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
 
 builder.Services.AddControllers();
 
