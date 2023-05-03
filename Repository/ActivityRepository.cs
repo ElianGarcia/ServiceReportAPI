@@ -15,9 +15,38 @@ namespace ServiceReportAPI.Repository
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        private Int64 IsExistingActivity(DateTime date, Int64 UserId)
+        {
+            string v = date.ToString("yyyy/MM/dd");
+            var query = $"SELECT ActivityId FROM Activity WHERE '{v}' = CONVERT(varchar, date, 111) AND UserId = {UserId}";
+
+            try
+            {
+                using (var connection = _context.CreateConnection())
+                {
+                    var result = connection.QueryFirst<Int64>(query);
+                    return result;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return 0;
+            }
+        }
+
         public async Task<int> CreateActivity(Activity Activity)
         {
-            var query = @"INSERT INTO Activity 
+            DateTime formatedDate = new DateTime(Activity.Date.Year, Activity.Date.Month, Activity.Date.Day, 0, 0, 0);
+            Int64 ActivityId = IsExistingActivity(formatedDate, Activity.UserId);
+
+            if(ActivityId > 0)
+            {
+                Activity.ActivityId = ActivityId;
+                return await UpdateActivity(Activity);
+            }
+
+            string query = @"INSERT INTO Activity 
             (Hours, Videos, Placements, Date, UserId) 
             VALUES 
             (@Hours, @Videos, @Placements, @Date, @UserId); SELECT SCOPE_IDENTITY();";
@@ -27,17 +56,8 @@ namespace ServiceReportAPI.Repository
             parameters.Add("Hours", Activity.Hours, DbType.Decimal);
             parameters.Add("Videos", Activity.Videos, DbType.Int32);
             parameters.Add("Placements", Activity.Placements, DbType.Int32);
-            //parameters.Add("ReturnVisits", Activity.ReturnVisits, DbType.Int32);
-            parameters.Add("Date", Activity.Date, DbType.DateTime2);
+            parameters.Add("Date", formatedDate, DbType.DateTime2);
             parameters.Add("UserId", Activity.UserId, DbType.Int64);
-
-            //if (Activity.ReturnVisits > 0)
-            //{
-            //    query += @"INSERT INTO ReturnVisits 
-            //    (Date, StudentId, UserId) 
-            //    VALUES 
-            //    (@Date, 0, @UserId);";
-            //}
 
             using (var connection = _context.CreateConnection())
             {
@@ -149,52 +169,28 @@ namespace ServiceReportAPI.Repository
 
         public async Task<int> UpdateActivity(Activity Activity)
         {
+            DateTime formatedDate = new DateTime(Activity.Date.Year, Activity.Date.Month, Activity.Date.Day, 0, 0, 0);
+            Int64 ActivityId = IsExistingActivity(formatedDate, Activity.UserId);
+
+            if (ActivityId == 0)
+            {
+                return await CreateActivity(Activity);
+            }
+
             var query = @"UPDATE Activity
             SET Hours = @Hours,
                 Videos = @Videos,
                 Placements = @Placements
-            WHERE ActivityId = @ActivityId; SELECT @ActivityId AS Result;";
+            WHERE ActivityId = @ActivityId AND UserId = @UserId; SELECT @ActivityId AS Result;";
 
             var parameters = new DynamicParameters();
             parameters.Add("ActivityId", Activity.ActivityId, DbType.Int64);
             parameters.Add("Hours", Activity.Hours, DbType.Decimal);
             parameters.Add("Videos", Activity.Videos, DbType.Int32);
             parameters.Add("Placements", Activity.Placements, DbType.Int32);
-            //parameters.Add("ReturnVisits", Activity.ReturnVisits, DbType.Int32);
             parameters.Add("Date", Activity.Date.ToShortDateString(), DbType.DateTime2);
             parameters.Add("DateToCompare", Activity.Date.ToString("yyyy/MM/dd"), DbType.String);
             parameters.Add("UserId", Activity.UserId, DbType.Int64);
-
-            //if (Activity.ReturnVisits > 0)
-            //{
-            //    //check quantity of return visits are already in the database
-            //    var query2 = @"SELECT COUNT(VisitId) FROM ReturnVisits WHERE FORMAT(Date,'yyyy/MM/dd') = @DateToCompare AND UserId = @UserId AND StudentId = 0";
-
-            //    using (var connection = _context.CreateConnection())
-            //    {
-            //        var result = await connection.ExecuteAsync(query2, parameters);
-            //        var difference = Activity.ReturnVisits - result;
-
-            //        if (difference > 0)
-            //        {
-            //            for (int i = 1; i < difference; i++)
-            //            {
-            //                query += @"INSERT INTO ReturnVisits 
-            //            (Date, StudentId, UserId) 
-            //            VALUES 
-            //            (@Date, 0, @UserId);";
-            //            }
-            //        }
-            //        else if (difference < 0)
-            //        {
-            //            //fix the counter as it cannot be less than 0
-            //            for (int i = 0; i < Math.Abs(difference); i++)
-            //            {
-            //                query += @"DELETE FROM ReturnVisits WHERE CONVERT(varchar, Date, 111) = @Date AND UserId = @UserId AND StudentId = 0";
-            //            }
-            //        }
-            //    }
-            //}
 
             using (var connection = _context.CreateConnection())
             {

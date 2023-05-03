@@ -44,8 +44,12 @@ namespace ServiceReportAPI.Repository
                 var goal = await connection.QueryFirstAsync<Goal>(query, parameters);
                 var progress = this.GetProgress(UserId).Result;
 
-                if (progress.Count() > 0)
+                //verifica si el objeto progress es del mismo mes en curso ya que cuando es un mes nuevo
+                //el usuario no tiene progreso aun por lo que deberia retornar todo as zero.
+                if(progress is not null && progress.LastOrDefault().Month == DateTime.Now.Month)
+                {
                     goal.Progress = progress.LastOrDefault();
+                }                    
                 else
                     goal.Progress = new Goal(0, 0, 0, 0, 0, UserId);
 
@@ -82,7 +86,7 @@ namespace ServiceReportAPI.Repository
                     var hour = Math.Floor(goal1.Hours);
                     var minute = Math.Round((goal1.Hours - hour) * 100);
 
-                    while (minute > 60)
+                    while (minute >= 60)
                     {
                         minute -= 60;
                         hour += 1;

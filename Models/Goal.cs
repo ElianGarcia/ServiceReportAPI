@@ -34,5 +34,16 @@ namespace ServiceReportAPI.Models
             ReturnVisits = returnVisits;
             UserId = userId;
         }
+
+        public Goal(int id, decimal hours, int placements, int videos, Int64 returnVisits, long userId, int? month)
+        {
+            GoalId = id;
+            Hours = hours;
+            Placements = placements;
+            Videos = videos;
+            UserId = userId;
+            ReturnVisits = returnVisits;
+            Month = month;
+        }
     }
 }
