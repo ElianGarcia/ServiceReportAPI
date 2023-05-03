@@ -7,7 +7,7 @@ using ServiceReportAPI.Models;
 
 namespace ServiceReportAPI.Controllers
 {
-    [Route("api/v2/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class ActivityController : ControllerBase
