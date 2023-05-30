@@ -29,7 +29,7 @@ namespace ServiceReportAPI.Repository
 
         public async Task<IEnumerable<Congregation>> GetCongregations()
         {
-            var query = "SELECT * FROM Congregations";
+            var query = "SELECT * FROM Congregations ORDER BY Name";
 
             using (var connection = _context.CreateConnection())
             {

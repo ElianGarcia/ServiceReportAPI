@@ -63,7 +63,7 @@ namespace ServiceReportAPI.Repository
         public async Task<User> GetUser(User user)
         {
             var query = "SELECT u.UserId, u.Name, u.UserName, u.CreatedDate, u.Email, u.RefreshToken, u.RefreshTokenExpiryTime," +
-                " u.active, u.CongregationId, c.Name AS CongregationName, u.CountryId, p.Name AS CountryName " +
+                " u.active, u.CongregationId, u.IsAdmin, c.Name AS CongregationName, u.CountryId, p.Name AS CountryName " +
                 "FROM users u " +
                 "INNER JOIN Congregations c ON u.CongregationId = c.CongregationId " +
                 "INNER JOIN Countries p ON u.CountryId = p.CountryId " +

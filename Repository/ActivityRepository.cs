@@ -15,7 +15,7 @@ namespace ServiceReportAPI.Repository
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        private Int64 IsExistingActivity(DateTime date, Int64 UserId)
+        private async Task<Int64> IsExistingActivity(DateTime date, Int64 UserId)
         {
             string v = date.ToString("yyyy/MM/dd");
             var query = $"SELECT ActivityId FROM Activity WHERE '{v}' = CONVERT(varchar, date, 111) AND UserId = {UserId}";
@@ -38,7 +38,7 @@ namespace ServiceReportAPI.Repository
         public async Task<int> CreateActivity(Activity Activity)
         {
             DateTime formatedDate = new DateTime(Activity.Date.Year, Activity.Date.Month, Activity.Date.Day, 0, 0, 0);
-            Int64 ActivityId = IsExistingActivity(formatedDate, Activity.UserId);
+            Int64 ActivityId = await IsExistingActivity(formatedDate, Activity.UserId);
 
             if(ActivityId > 0)
             {
@@ -170,7 +170,7 @@ namespace ServiceReportAPI.Repository
         public async Task<int> UpdateActivity(Activity Activity)
         {
             DateTime formatedDate = new DateTime(Activity.Date.Year, Activity.Date.Month, Activity.Date.Day, 0, 0, 0);
-            Int64 ActivityId = IsExistingActivity(formatedDate, Activity.UserId);
+            Int64 ActivityId = await IsExistingActivity(formatedDate, Activity.UserId);
 
             if (ActivityId == 0)
             {
