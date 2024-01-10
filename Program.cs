@@ -21,6 +21,7 @@ builder.Services.AddScoped<IPlacementsRepository, PlacementsRepository>();
 builder.Services.AddScoped<IStudentsRepository, StudentsRepository>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
+builder.Services.AddScoped<IWedRepository, WedRepository>();
 
 builder.Services.AddControllers();
 
