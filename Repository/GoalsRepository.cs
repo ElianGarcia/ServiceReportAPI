@@ -60,19 +60,20 @@ namespace ServiceReportAPI.Repository
         public async Task<IEnumerable<Goal>> GetProgress(long UserId)
         {
             var query = @"SELECT
-                SUM(ISNULL(a.Hours, 0)) AS Hours, 
-                SUM(ISNULL(a.Placements, 0)) AS Placements, 
-	            SUM(ISNULL(a.Videos, 0)) AS Videos,
-	            ISNULL((SELECT COUNT(VisitId) FROM ReturnVisits WHERE MONTH(Date) = MONTH(a.Date) AND UserId = @UserId), 0) AS ReturnVisits, 
-                (SELECT ISNULL(COUNT(*), 0) FROM STUDENTS 
-	                WHERE StudentId		
-		                IN (SELECT StudentId FROM ReturnVisits WHERE UserId = @UserId AND MONTH(Date) = MONTH(a.Date))
-		                AND IsStudent = 1)  AS Students,
-	            MONTH(a.Date) AS Month
-            FROM Activity a
-            WHERE a.UserId = @UserId
-            GROUP BY MONTH(a.Date)
-            ORDER BY MONTH(a.Date)";
+                            SUM(ISNULL(a.Hours, 0)) AS Hours, 
+                            SUM(ISNULL(a.Placements, 0)) AS Placements, 
+	                        SUM(ISNULL(a.Videos, 0)) AS Videos,
+	                        ISNULL((SELECT COUNT(VisitId) FROM ReturnVisits WHERE MONTH(Date) = MONTH(a.Date) AND UserId = @UserId), 0) AS ReturnVisits, 
+                            (SELECT ISNULL(COUNT(*), 0) FROM STUDENTS 
+	                            WHERE StudentId		
+		                            IN (SELECT StudentId FROM ReturnVisits WHERE UserId = @UserId AND MONTH(Date) = MONTH(a.Date))
+		                            AND IsStudent = 1)  AS Students,
+	                        MONTH(a.Date) AS Month,
+	                        YEAR(a.Date) AS Year
+                        FROM Activity a
+                        WHERE a.UserId = @UserId
+                        GROUP BY YEAR(a.Date), MONTH(a.Date)
+                        ORDER BY MONTH(a.Date), YEAR(a.Date) DESC";
 
             var parameters = new DynamicParameters();
             parameters.Add("UserId", UserId, DbType.Int64);

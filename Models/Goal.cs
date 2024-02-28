@@ -14,6 +14,7 @@ namespace ServiceReportAPI.Models
         public Int64? UserId { get; set; }
         public Int64? ReturnVisits { get; set; }
         public int? Month { get; set; }
+        public int? Year { get; set; }
         public Goal? Progress { get; set; }
 
         public Goal()
@@ -35,7 +36,7 @@ namespace ServiceReportAPI.Models
             UserId = userId;
         }
 
-        public Goal(int id, decimal hours, int placements, int videos, Int64 returnVisits, long userId, int? month)
+        public Goal(int id, decimal hours, int placements, int videos, Int64 returnVisits, long userId, int? month, int? year)
         {
             GoalId = id;
             Hours = hours;
@@ -44,6 +45,7 @@ namespace ServiceReportAPI.Models
             UserId = userId;
             ReturnVisits = returnVisits;
             Month = month;
+            Year = year;
         }
     }
 }
