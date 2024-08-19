@@ -53,8 +53,16 @@ namespace ServiceReportAPI.Controllers
         {
             try
             {
-                var result = await _repository.SaveInvitee(invitee);
-                return Ok(result);
+                if (invitee.ID == 0)
+                {
+                    var result = await _repository.SaveInvitee(invitee);
+                    return Ok(result);
+                }
+                else
+                {
+                    var result = await _repository.UpdateInvitee(invitee);
+                    return Ok(result);
+                }
             }
             catch (Exception ex)
             {

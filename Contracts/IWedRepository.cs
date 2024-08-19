@@ -7,5 +7,6 @@ namespace ServiceReportAPI.Contracts
         public Task<IEnumerable<Invitee>> GetInvitees();
         public Task<Invitee> GetInvitee(int id);
         public Task<int> SaveInvitee(Invitee invitee);
+        public Task<int> UpdateInvitee(Invitee invitee);
     }
 }

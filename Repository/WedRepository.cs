@@ -43,22 +43,65 @@ namespace ServiceReportAPI.Repository
 
         public async Task<int> SaveInvitee(Invitee invitee)
         {
-            var query = @"INSERT INTO Invitee (ID, Descripcion, Invitados, Confirmados, InvitadoA, Confirmado, Activo)
-            VALUES (@ID, @Descripcion, @Invitados, @Confirmados, @InvitadoA, @Confirmado, 1)";
-
-            var parameters = new DynamicParameters();
-            parameters.Add("ID", invitee.ID, DbType.Int32);
-            parameters.Add("Descripcion", invitee.Descripcion, DbType.String);
-            parameters.Add("Invitados", invitee.Invitados, DbType.Int32);
-            parameters.Add("Confirmados", invitee.Confirmados, DbType.Int32);
-            parameters.Add("InvitadoA", invitee.InvitadoA, DbType.Int32);
-            parameters.Add("Confirmado", invitee.Confirmado, DbType.Int32);
-
-            using (var connection = _context.CreateConnection())
+            try
             {
-                var result = await connection.ExecuteAsync(query, parameters);
-                return result;
+                var query = @"INSERT INTO Invitee (Descripcion, Invitados, Confirmados, InvitadoA, Confirmado, Activo)
+                    VALUES (@Descripcion, @Invitados, @Confirmados, @InvitadoA, @Confirmado, 1)";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("Descripcion", invitee.Descripcion, DbType.String);
+                parameters.Add("Invitados", invitee.Invitados, DbType.Int32);
+                parameters.Add("Confirmados", invitee.Confirmados, DbType.Int32);
+                parameters.Add("InvitadoA", invitee.InvitadoA, DbType.Int32);
+                parameters.Add("Confirmado", invitee.Confirmado, DbType.Int32);
+
+                using (var connection = _context.CreateConnection())
+                {
+                    var result = await connection.ExecuteAsync(query, parameters);
+                    return result;
+                }
             }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
         }
+
+        public async Task<int> UpdateInvitee(Invitee invitee)
+        {
+            try
+            {
+                var query = @"UPDATE Invitee 
+                  SET Descripcion = @Descripcion,
+                      Invitados = @Invitados,
+                      Confirmados = @Confirmados,
+                      InvitadoA = @InvitadoA,
+                      Confirmado = @Confirmado,
+                      Activo = @Activo
+                  WHERE ID = @ID";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("ID", invitee.ID, DbType.Int32);
+                parameters.Add("Descripcion", invitee.Descripcion, DbType.String);
+                parameters.Add("Invitados", invitee.Invitados, DbType.Int32);
+                parameters.Add("Confirmados", invitee.Confirmados, DbType.Int32);
+                parameters.Add("InvitadoA", invitee.InvitadoA, DbType.Int32);
+                parameters.Add("Confirmado", invitee.Confirmado, DbType.Int32);
+                parameters.Add("Activo", invitee.Activo, DbType.Boolean);
+
+                using (var connection = _context.CreateConnection())
+                {
+                    var result = await connection.ExecuteAsync(query, parameters);
+                    return result;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+        }
+
     }
 }
